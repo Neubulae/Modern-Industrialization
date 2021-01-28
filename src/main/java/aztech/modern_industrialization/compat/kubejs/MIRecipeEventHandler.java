@@ -44,7 +44,7 @@ import org.jetbrains.annotations.NotNull;
 public class MIRecipeEventHandler implements KubeJSInitializer {
     @Override
     public void onKubeJSInitialization() {
-        SpecialRecipeSerializerManager.EVENT.register(event -> {
+        RegisterRecipeHandlersEvent.EVENT.register(event -> {
             MIMachines.RECIPE_TYPES.keySet().forEach(t -> event.register(new MachineRecipeType(t.getId().toString(), MachineRecipe::new)));
             event.register(new MachineRecipeType("modern_industrialization:forge_hammer_hammer", MachineRecipe::new));
             event.register(new MachineRecipeType("modern_industrialization:forge_hammer_saw", MachineRecipe::new));
