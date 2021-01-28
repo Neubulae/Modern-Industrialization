@@ -44,7 +44,7 @@ import org.jetbrains.annotations.NotNull;
 public class MIRecipeEventHandler implements KubeJSInitializer {
     @Override
     public void onKubeJSInitialization() {
-        RegisterRecipeHandlersEvent.EVENT.register(event -> {
+        SpecialRecipeSerializerManager.EVENT.register(event -> {
             MIMachines.RECIPE_TYPES.keySet().forEach(t -> event.register(new MachineRecipeType(t.getId().toString(), MachineRecipe::new)));
             event.register(new MachineRecipeType("modern_industrialization:forge_hammer_hammer", MachineRecipe::new));
             event.register(new MachineRecipeType("modern_industrialization:forge_hammer_saw", MachineRecipe::new));
@@ -53,7 +53,7 @@ public class MIRecipeEventHandler implements KubeJSInitializer {
 
     private static class MachineRecipeType extends RecipeTypeJS {
         public MachineRecipeType(String id, Supplier<RecipeJS> f) {
-            super(Objects.requireNonNull(Registry.RECIPE_SERIALIZER.get(UtilsJS.getMCID(id))), id, f);
+            super(Objects.requireNonNull(Registry.RECIPE_SERIALIZER.get(UtilsJS.getMCID(id))), f);
         }
 
         @Override
@@ -124,7 +124,7 @@ public class MIRecipeEventHandler implements KubeJSInitializer {
             if (obj.has("count"))
                 amount = obj.get("count").getAsInt();
             IngredientJS ing = IngredientJS.of(obj);
-            ing = ing.count(amount);
+            ing = ing.withCount(amount);
             inputItems.add(ing);
             itemInputProbabilities[index] = readProbability(obj);
         }
@@ -146,7 +146,7 @@ public class MIRecipeEventHandler implements KubeJSInitializer {
         }
 
         @Override
-        protected void serialize() {
+        public void serialize() {
             json.addProperty("eu", eu);
             json.addProperty("duration", duration);
             if (fluidInputs != null)
